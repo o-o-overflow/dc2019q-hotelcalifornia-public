@@ -1,0 +1,16 @@
+#include <sys/mman.h>
+#include <stdint.h>
+#include <unistd.h>
+
+#define PAGE_START(P) ((uintptr_t)(P) & ~(pagesize-1))
+
+int main(int argc, char **argv)
+{
+    int (*func)();
+    uintptr_t pagesize = sysconf(_SC_PAGE_SIZE);
+    mprotect((void *)PAGE_START(&code), 4000, PROT_READ|PROT_WRITE|PROT_EXEC);
+    //func = (int (*)()) &code[80];
+    func = (int (*)()) &code[4];
+    (int)(*func)();
+     return 0;
+}
